@@ -30,6 +30,7 @@ import qualified Basement.Numerical.Number  as Basement (toInteger)
 import           Basement.Types.Word256     (Word256 (Word256))
 import qualified Basement.Types.Word256     as Basement (quot, rem)
 import           Data.Bits                  (Bits (testBit))
+import           Data.Hashable              (Hashable (hashWithSalt))
 import           Data.Proxy                 (Proxy (..))
 import           Data.Serialize             (Get, Putter, Serialize (get, put))
 import           GHC.Generics               (Generic)
@@ -61,6 +62,13 @@ instance (KnownNat n, n <= 256) => Real (UIntN n) where
 instance (KnownNat n, n <= 256) => Integral (UIntN n) where
     toInteger = toInteger . unUIntN
     quotRem (UIntN a) (UIntN b) = (UIntN $ quot a b, UIntN $ rem a b)
+
+instance (n <= 256) => Hashable (UIntN n) where
+    hashWithSalt s (UIntN (Word256 a b c d)) =
+        s `hashWithSalt`
+        a `hashWithSalt`
+        b `hashWithSalt`
+        c `hashWithSalt` d
 
 instance (n <= 256) => ABIType (UIntN n) where
     isDynamic _ = False

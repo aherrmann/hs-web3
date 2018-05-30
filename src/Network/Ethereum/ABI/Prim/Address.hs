@@ -28,6 +28,7 @@ import           Data.ByteArray.Encoding       (Base (Base16), convertFromBase,
                                                 convertToBase)
 import           Data.ByteString               (ByteString)
 import qualified Data.ByteString.Char8         as C8 (drop, pack, take, unpack)
+import           Data.Hashable                 (Hashable)
 import           Data.Monoid                   ((<>))
 import           Data.String                   (IsString (..))
 import           Data.Text.Encoding            (decodeUtf8, encodeUtf8)
@@ -45,6 +46,7 @@ newtype Address = Address { unAddress :: UIntN 160 }
   deriving (Eq, Ord, GHC.Generic)
 
 instance Generic Address
+instance Hashable Address
 
 -- TODO: Address . drop 12 . sha3
 {-
